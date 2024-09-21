@@ -1,10 +1,14 @@
+### Archivos de ayuda ###
 HELP.md
+
+### Directorios de compilación ###
 target/
+!target/*.jar
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+### STS (Spring Tool Suite) ###
 .apt_generated
 .classpath
 .factorypath
@@ -32,11 +36,11 @@ build/
 ### VS Code ###
 .vscode/
 
-### SECRET ###
+### Archivos secretos ###
 .env
 
-# Logs
+### Logs ###
 *.log
 
-# Compiled class files
+### Archivos de clase compilados ###
 *.class
