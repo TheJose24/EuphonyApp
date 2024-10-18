@@ -1,7 +1,6 @@
 package com.euphony.streaming.service.implementation;
 
 import com.euphony.streaming.dto.request.UserKeycloakRequestDTO;
-import com.euphony.streaming.dto.response.UserKeycloakResponseDTO;
 import com.euphony.streaming.exception.custom.UserCreationException;
 import com.euphony.streaming.exception.custom.UserNotFoundException;
 import com.euphony.streaming.service.interfaces.IKeycloakService;
@@ -15,13 +14,16 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,6 +69,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
      * @return un mensaje indicando el resultado de la operación
      */
     @Override
+    @Transactional
     public String createUser(@NotNull UserKeycloakRequestDTO userKeycloakRequestDTO) {
         validateUserInput(userKeycloakRequestDTO);
 
@@ -79,18 +82,19 @@ public class KeycloakServiceImpl implements IKeycloakService {
             if (status == 201) {
 
                 String userId = extractUserId(response);
+                userRepresentation.setId(userId);
                 setUserPassword(userId, userKeycloakRequestDTO.getPassword());
                 assignUserRoles(userId, userKeycloakRequestDTO.getRoles());
 
-                log.info("Usuario creado con éxito: {}", userKeycloakRequestDTO.getUsername());
-                return "Usuario creado con éxito";
+                log.info("Usuario creado con éxito: {}", userRepresentation.getId());
+                return userId;
 
             } else if (status == 409) {
                 log.error("El usuario ya existe: {}", userKeycloakRequestDTO.getUsername());
-                throw new UserCreationException("El usuario ya existe");
+                throw new UserCreationException("El usuario ya existe", HttpStatus.CONFLICT);
             } else {
                 log.error("Error al crear el usuario: {}. Status: {}. Detalles: {}", userKeycloakRequestDTO.getUsername(), status, response.getEntity());
-                throw new UserCreationException("Error al crear el usuario, por favor contacte al administrador");
+                throw new UserCreationException("Error al crear el usuario, por favor contacte al administrador", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
@@ -102,6 +106,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
      * @param userId el ID del usuario que se eliminará
      */
     @Override
+    @Transactional
     public void deleteUser(String userId) {
 
         validateNotEmpty(userId, "El ID de usuario no puede estar vacío");
@@ -125,6 +130,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
      * @param userKeycloakRequestDTO el objeto DTO que contiene la información del usuario a actualizar
      */
     @Override
+    @Transactional
     public void updateUser(String userId, @NotNull UserKeycloakRequestDTO userKeycloakRequestDTO) {
 
         validateNotEmpty(userId, "El ID de usuario no puede estar vacío");
@@ -159,7 +165,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
     private void validateNotEmpty(String value, String errorMessage) {
         if (value == null || value.trim().isEmpty()) {
-            throw new BadRequestException(errorMessage);
+            throw new UserCreationException(errorMessage, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -234,7 +240,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
     private List<RoleRepresentation> getRoleRepresentations(RealmResource realmResource, String clientUuid, Set<String> roles) {
         return realmResource.clients().get(clientUuid).roles().list().stream()
                 .filter(role -> roles.contains(role.getName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -269,7 +275,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
         userRepresentation.setLastName(userKeycloakRequestDTO.getLastName());
         userRepresentation.setEmail(userKeycloakRequestDTO.getEmail());
         userRepresentation.setUsername(userKeycloakRequestDTO.getUsername());
-        userRepresentation.setEmailVerified(true);
+        userRepresentation.setEmailVerified(false);
         userRepresentation.setEnabled(true);
         return userRepresentation;
     }

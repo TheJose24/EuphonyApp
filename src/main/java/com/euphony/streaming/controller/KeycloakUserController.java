@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,20 +26,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/keycloak/usuarios")
 @Tag(name = "Gestión de Usuarios Keycloak", description = "API para la gestión de usuarios en Keycloak")
 @PreAuthorize("hasRole('admin_client_role')")
+@Slf4j
+@RequiredArgsConstructor(onConstructor_ = @__(@Lazy))
 public class KeycloakUserController {
 
     private final IKeycloakService keycloakService;
-
-    @Autowired
-    public KeycloakUserController(IKeycloakService keycloakService) {
-        this.keycloakService = keycloakService;
-    }
 
     @Operation(summary = "Listar todos los usuarios",
             description = "Obtiene una lista completa de todos los usuarios registrados en Keycloak.")
@@ -131,7 +130,11 @@ public class KeycloakUserController {
                                         @Parameter(description = "Nuevos datos del usuario", required = true,
                                                 schema = @Schema(implementation = UserKeycloakRequestDTO.class))
                                         @Valid @RequestBody UserKeycloakRequestDTO userKeycloakRequestDTO) {
-        keycloakService.updateUser(userId, userKeycloakRequestDTO);
+        try {
+            keycloakService.updateUser(userId, userKeycloakRequestDTO);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Datos de actualización inválidos o incompletos");
+        }
         return ResponseEntity.ok("Usuario actualizado correctamente");
     }
 
@@ -162,21 +165,21 @@ public class KeycloakUserController {
      */
     private UserKeycloakResponseDTO convertToResponseDTO(UserRepresentation userRepresentation) {
         UserKeycloakResponseDTO dto = new UserKeycloakResponseDTO();
-        dto.setId(userRepresentation.getId());
-        dto.setUsername(userRepresentation.getUsername());
-        dto.setEmail(userRepresentation.getEmail());
-        dto.setFirstName(userRepresentation.getFirstName());
-        dto.setLastName(userRepresentation.getLastName());
+
+        // Verificar si userRepresentation tiene valores nulos
+        dto.setId(UUID.fromString(userRepresentation.getId() != null ? userRepresentation.getId() : "ID no disponible"));
+        dto.setUsername(userRepresentation.getUsername() != null ? userRepresentation.getUsername() : "Username no disponible");
+        dto.setEmail(userRepresentation.getEmail() != null ? userRepresentation.getEmail() : "Email no disponible");
+        dto.setFirstName(userRepresentation.getFirstName() != null ? userRepresentation.getFirstName() : "FirstName no disponible");
+        dto.setLastName(userRepresentation.getLastName() != null ? userRepresentation.getLastName() : "LastName no disponible");
         dto.setEmailVerified(userRepresentation.isEmailVerified());
         dto.setEnabled(userRepresentation.isEnabled());
 
-        // Obtener roles del usuario
+        // Obtener roles del usuario, asegurarse de que no sean nulos
         Set<String> roles = keycloakService.getUserRoles(userRepresentation.getId());
         dto.setRoles(roles);
 
         return dto;
     }
-
-
 
 }

@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class FavoritosCancionId implements Serializable {
 
-    private Long usuario;
+    private UUID usuario;
     private Long cancion;
 }

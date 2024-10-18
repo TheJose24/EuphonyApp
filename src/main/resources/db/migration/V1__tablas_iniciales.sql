@@ -1,14 +1,13 @@
 -- Create USUARIO table
 CREATE TABLE USUARIO
 (
-    id_usuario       SERIAL PRIMARY KEY,
+    id_usuario       UUID UNIQUE PRIMARY KEY,
     nombre           VARCHAR(100)        NOT NULL,
     apellido         VARCHAR(100)        NOT NULL,
     username         VARCHAR(50) UNIQUE  NOT NULL,
     email            VARCHAR(255) UNIQUE NOT NULL,
-    contrasena       VARCHAR(255)        NOT NULL,
-    fecha_nacimiento DATE                NOT NULL,
-    pais             VARCHAR(100)        NOT NULL,
+    fecha_nacimiento DATE,
+    pais             VARCHAR(100),
     img_perfil       VARCHAR(255),
     is_active        BOOLEAN   DEFAULT TRUE,
     last_login       TIMESTAMP,
@@ -21,7 +20,7 @@ CREATE INDEX idx_username ON USUARIO (username, email);
 CREATE TABLE INFORMACION_USUARIO
 (
     id_informacion SERIAL PRIMARY KEY,
-    id_usuario     INTEGER UNIQUE,
+    id_usuario     UUID UNIQUE,
     telefono       VARCHAR(20),
     direccion      TEXT,
     ciudad         VARCHAR(100),
@@ -36,13 +35,14 @@ CREATE TABLE ROL
     nombre_rol  VARCHAR(50) UNIQUE NOT NULL,
     descripcion TEXT,
     is_active   BOOLEAN   DEFAULT TRUE,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create USUARIO_ROL table (Many-to-Many relationship)
 CREATE TABLE USUARIO_ROL
 (
-    id_usuario INTEGER,
+    id_usuario UUID UNIQUE,
     id_rol     INTEGER,
     PRIMARY KEY (id_usuario, id_rol),
     CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario) ON DELETE CASCADE,
@@ -75,7 +75,7 @@ CREATE TABLE METODO_PAGO
 CREATE TABLE SUSCRIPCION
 (
     id_suscripcion    SERIAL PRIMARY KEY,
-    id_usuario        INTEGER,
+    id_usuario        UUID UNIQUE,
     id_plan           INTEGER,
     id_metodo_pago    INTEGER,
     fecha_inicio      DATE NOT NULL,
@@ -158,7 +158,7 @@ CREATE INDEX idx_cancion_genero ON CANCION_GENERO (id_cancion, id_genero);
 CREATE TABLE PLAYLIST
 (
     id_playlist    SERIAL PRIMARY KEY,
-    id_usuario     INTEGER,
+    id_usuario     UUID UNIQUE,
     nombre         VARCHAR(255) NOT NULL,
     fecha_creacion DATE         NOT NULL,
     descripcion    TEXT,
@@ -183,7 +183,7 @@ CREATE INDEX idx_playlist_cancion ON PLAYLIST_CANCION (id_playlist, id_cancion);
 CREATE TABLE HISTORIAL_REPRODUCCION
 (
     id_historial       SERIAL PRIMARY KEY,
-    id_usuario         INTEGER,
+    id_usuario         UUID UNIQUE,
     id_cancion         INTEGER,
     fecha_reproduccion TIMESTAMP NOT NULL,
     CONSTRAINT fk_historial_usuario FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario) ON DELETE CASCADE,
@@ -191,9 +191,9 @@ CREATE TABLE HISTORIAL_REPRODUCCION
 );
 
 -- Create FAVORITOS table
-CREATE TABLE FAVORITOS
+CREATE TABLE FAVORITOS_CANCION
 (
-    id_usuario     INTEGER,
+    id_usuario     UUID UNIQUE,
     id_cancion     INTEGER,
     fecha_agregado TIMESTAMP NOT NULL,
     PRIMARY KEY (id_usuario, id_cancion),
@@ -203,7 +203,7 @@ CREATE TABLE FAVORITOS
 
 CREATE TABLE FAVORITOS_ALBUM
 (
-    id_usuario     INTEGER,
+    id_usuario     UUID UNIQUE,
     id_album       INTEGER,
     fecha_agregado TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id_usuario, id_album),
@@ -215,7 +215,7 @@ CREATE TABLE FAVORITOS_ALBUM
 CREATE TABLE COMENTARIOS
 (
     id_comentario    SERIAL PRIMARY KEY,
-    id_usuario       INTEGER,
+    id_usuario       UUID UNIQUE,
     id_cancion       INTEGER,
     comentario       TEXT      NOT NULL,
     fecha_comentario TIMESTAMP NOT NULL,
@@ -226,7 +226,7 @@ CREATE TABLE COMENTARIOS
 -- Create CALIFICACIONES table
 CREATE TABLE CALIFICACIONES
 (
-    id_usuario         INTEGER,
+    id_usuario         UUID UNIQUE,
     id_cancion         INTEGER,
     calificacion       INTEGER CHECK (calificacion BETWEEN 1 AND 5),
     fecha_calificacion TIMESTAMP NOT NULL,
@@ -239,7 +239,7 @@ CREATE TABLE CALIFICACIONES
 CREATE TABLE NOTIFICACIONES
 (
     id_notificacion SERIAL PRIMARY KEY,
-    id_usuario      INTEGER,
+    id_usuario      UUID UNIQUE,
     mensaje         TEXT      NOT NULL,
     leido           BOOLEAN DEFAULT FALSE,
     fecha_envio     TIMESTAMP NOT NULL,
@@ -249,7 +249,7 @@ CREATE TABLE NOTIFICACIONES
 -- Create SEGUIDORES_ARTISTA table
 CREATE TABLE SEGUIDORES_ARTISTA
 (
-    id_usuario        INTEGER,
+    id_usuario        UUID UNIQUE,
     id_artista        INTEGER,
     fecha_seguimiento TIMESTAMP NOT NULL,
     PRIMARY KEY (id_usuario, id_artista),
@@ -261,7 +261,7 @@ CREATE TABLE SEGUIDORES_ARTISTA
 CREATE TABLE COLABORACION_PLAYLIST
 (
     id_playlist        INTEGER,
-    id_usuario         INTEGER,
+    id_usuario         UUID UNIQUE,
     fecha_colaboracion TIMESTAMP NOT NULL,
     PRIMARY KEY (id_playlist, id_usuario),
     CONSTRAINT fk_colaboracion_playlist FOREIGN KEY (id_playlist) REFERENCES PLAYLIST (id_playlist) ON DELETE CASCADE,
