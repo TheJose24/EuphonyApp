@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,9 +16,8 @@ import java.time.LocalDateTime;
 public class UsuarioEntity extends BaseAudit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private Long idUsuario;
+    private UUID idUsuario;
 
     @Column(name = "nombre", length = 100, nullable = false)
     private String nombre;
@@ -31,13 +31,10 @@ public class UsuarioEntity extends BaseAudit {
     @Column(name = "email", length = 255, nullable = false, unique = true)
     private String email;
 
-    @Column(name = "contrasena", nullable = false)
-    private String contrasena;
-
-    @Column(name = "fecha_nacimiento", nullable = false)
+    @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
 
-    @Column(name = "pais", length = 100, nullable = false)
+    @Column(name = "pais", length = 100)
     private String pais;
 
     @Column(name = "img_perfil")

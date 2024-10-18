@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -12,7 +13,7 @@ import java.util.Set;
 public class UserKeycloakResponseDTO {
 
     @Schema(description = "ID único del usuario en Keycloak", example = "123e4567-e89b-12d3-a456-426614174000")
-    private String id;
+    private UUID id;
 
     @Schema(description = "Nombre de usuario único", example = "johndoe")
     private String username;

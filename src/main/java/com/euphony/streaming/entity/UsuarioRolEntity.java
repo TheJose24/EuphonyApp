@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,7 +17,7 @@ public class UsuarioRolEntity {
 
     @Id
     @Column(name = "id_usuario")
-    private Long idUsuario;
+    private UUID idUsuario;
 
     @Id
     @Column(name = "id_rol")

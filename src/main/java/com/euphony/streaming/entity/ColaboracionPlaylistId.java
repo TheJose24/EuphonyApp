@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -12,5 +13,5 @@ import java.io.Serializable;
 public class ColaboracionPlaylistId implements Serializable {
 
     private Long playlist;
-    private Long usuario;
+    private UUID usuario;
 }

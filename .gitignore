@@ -44,3 +44,6 @@ build/
 
 ### Archivos de clase compilados ###
 *.class
+
+### Docker ###
+compose.yaml

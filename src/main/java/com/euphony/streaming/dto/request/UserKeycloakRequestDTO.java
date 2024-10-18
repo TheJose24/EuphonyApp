@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 import java.util.Set;
 
@@ -15,17 +16,17 @@ import java.util.Set;
 @Builder
 public class UserKeycloakRequestDTO {
 
-    @Schema(description = "Nombre de usuario único", example = "johndoe", required = true)
-    @NotBlank(message = "El nombre de usuario es obligatorio")
+    @Schema(description = "Nombre de usuario único", example = "johndoe", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "El nombre de usuario es obligatorio1")
     @Size(min = 4, max = 20, message = "El nombre de usuario debe tener entre 4 y 20 caracteres")
     private String username;
 
-    @Schema(description = "Correo electrónico del usuario", example = "john.doe@example.com", required = true)
+    @Schema(description = "Correo electrónico del usuario", example = "john.doe@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "El correo electrónico es obligatorio")
     @Email(message = "Debe ser un correo electrónico válido")
     private String email;
 
-    @Schema(description = "Contraseña del usuario", example = "SecurePass123!", required = true)
+    @Schema(description = "Contraseña del usuario", example = "SecurePass123!", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     private String password;

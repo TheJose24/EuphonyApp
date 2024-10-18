@@ -1,7 +1,7 @@
 -- Create FACTURA table
 CREATE TABLE FACTURA (
                          id_factura SERIAL PRIMARY KEY,
-                         id_usuario INT NOT NULL,
+                         id_usuario UUID UNIQUE NOT NULL,
                          id_suscripcion INT,
                          id_metodo_pago INT NOT NULL,
                          numero_factura VARCHAR(20) UNIQUE NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE DETALLE_FACTURA (
 -- Create BOLETA table
 CREATE TABLE BOLETA (
                         id_boleta SERIAL PRIMARY KEY,
-                        id_usuario INT NOT NULL,
+                        id_usuario UUID UNIQUE NOT NULL,
                         id_suscripcion INT,
                         id_metodo_pago INT NOT NULL,
                         numero_boleta VARCHAR(20) UNIQUE NOT NULL,
