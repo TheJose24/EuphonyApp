@@ -1,7 +1,9 @@
 package com.euphony.streaming.exception.advice;
 
 import com.euphony.streaming.exception.custom.UserCreationException;
+import com.euphony.streaming.exception.custom.UserDeletionException;
 import com.euphony.streaming.exception.custom.UserNotFoundException;
+import com.euphony.streaming.exception.custom.UserUpdateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +32,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserUpdateException.class)
+    public ResponseEntity<String> handleUserUpdateException(UserUpdateException ex) {
+        return new ResponseEntity<>(ex.getMessage(), ex.getHttpStatus());
+    }
+
+    @ExceptionHandler(UserDeletionException.class)
+    public ResponseEntity<String> handleUserDeletionException(UserDeletionException ex) {
+        return new ResponseEntity<>(ex.getMessage(), ex.getHttpStatus());
     }
 
     @ExceptionHandler(Exception.class)

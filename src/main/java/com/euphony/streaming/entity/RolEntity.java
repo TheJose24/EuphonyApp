@@ -1,28 +1,31 @@
 package com.euphony.streaming.entity;
 
 import com.euphony.streaming.audit.BaseAudit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "ROL")
-public class RolEntity extends BaseAudit {
+@Table(name = "ROLES")
+public class RolEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_rol")
     private Long idRol;
 
-    @Column(name = "nombre_rol", nullable = false, unique = true, length = 50)
-    private String nombreRol;
+    @Column(name = "nombre_rol", length = 50, unique = true, nullable = false)
+    private String nameRol;
 
-    @Column(name = "descripcion")
-    private String descripcion;
-
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<UsuarioEntity> usuarios = new HashSet<>();
 
 }
