@@ -279,7 +279,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     private RolEntity getOrCreateRoleEntity(String roleName) {
-        return rolRepository.findByNombreRol(roleName).orElseGet(() -> {
+        return rolRepository.findByNameRol(roleName).orElseGet(() -> {
             log.info("El rol '{}' no existe en la base de datos, se creará.", roleName);
             RolEntity newRole = new RolEntity();
             newRole.setNameRol(roleName);
