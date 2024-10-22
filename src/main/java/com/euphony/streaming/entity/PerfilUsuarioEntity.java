@@ -5,32 +5,37 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "INFORMACION_USUARIO")
-public class InformacionUsuarioEntity{
+@Table(name = "PERFIL_USUARIO")
+public class PerfilUsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_informacion")
-    private Long idInformacion;
+    @Column(name = "id_perfil")
+    private Long idPerfil;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", unique = true, nullable = false)
     private UsuarioEntity usuario;
 
+    @Column(name = "fecha_nacimiento")
+    private Date fechaNacimiento;
+
+    @Column(name = "pais", length = 100)
+    private String pais;
+
+    @Column(name = "img_perfil")
+    private String imgPerfil;
+
     @Column(name = "telefono", length = 20)
     private String telefono;
 
-    @Column(name = "direccion")
-    private String direccion;
-
     @Column(name = "ciudad", length = 100)
     private String ciudad;
-
-    @Column(name = "codigo_postal", length = 20)
-    private String codigoPostal;
 
 }

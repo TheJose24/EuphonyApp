@@ -1,55 +1,49 @@
+CREATE TABLE ROLES
+(
+    id_rol      SERIAL PRIMARY KEY,
+    nombre_rol  VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE INDEX idx_roles_nombre ON ROLES (nombre_rol);
+
 -- Create USUARIO table
 CREATE TABLE USUARIO
 (
     id_usuario       UUID UNIQUE PRIMARY KEY,
-    nombre           VARCHAR(100)        NOT NULL,
-    apellido         VARCHAR(100)        NOT NULL,
     username         VARCHAR(50) UNIQUE  NOT NULL,
     email            VARCHAR(255) UNIQUE NOT NULL,
-    fecha_nacimiento DATE,
-    pais             VARCHAR(100),
-    img_perfil       VARCHAR(255),
+    nombre           VARCHAR(100)        NOT NULL,
+    apellido         VARCHAR(100)        NOT NULL,
     is_active        BOOLEAN   DEFAULT TRUE,
-    last_login       TIMESTAMP,
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_username ON USUARIO (username, email);
 
-CREATE TABLE INFORMACION_USUARIO
+-- Create USUARIO_ROLES table
+CREATE TABLE USUARIO_ROLES
 (
-    id_informacion SERIAL PRIMARY KEY,
-    id_usuario     UUID UNIQUE,
-    telefono       VARCHAR(20),
-    direccion      TEXT,
-    ciudad         VARCHAR(100),
-    codigo_postal  VARCHAR(20),
-    CONSTRAINT fk_informacion_usuario FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario) ON DELETE CASCADE
-);
-
--- Create ROL table
-CREATE TABLE ROL
-(
-    id_rol      SERIAL PRIMARY KEY,
-    nombre_rol  VARCHAR(50) UNIQUE NOT NULL,
-    descripcion TEXT,
-    is_active   BOOLEAN   DEFAULT TRUE,
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Create USUARIO_ROL table (Many-to-Many relationship)
-CREATE TABLE USUARIO_ROL
-(
-    id_usuario UUID UNIQUE,
-    id_rol     INTEGER,
+    id_usuario  UUID NOT NULL,
+    id_rol      INTEGER NOT NULL,
     PRIMARY KEY (id_usuario, id_rol),
     CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario) ON DELETE CASCADE,
-    CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES ROL (id_rol) ON DELETE CASCADE
+    CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES ROLES (id_rol) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_usuario_rol ON USUARIO_ROL (id_usuario, id_rol);
+CREATE INDEX idx_usuario_roles ON USUARIO_ROLES(id_usuario, id_rol);
+
+CREATE TABLE PERFIL_USUARIO
+(
+    id_perfil SERIAL PRIMARY KEY,
+    id_usuario     UUID UNIQUE,
+    fecha_nacimiento DATE,
+    pais             VARCHAR(100),
+    img_perfil       VARCHAR(255),
+    telefono       VARCHAR(20),
+    ciudad         VARCHAR(100),
+    CONSTRAINT fk_perfil_usuario FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario) ON DELETE CASCADE
+);
 
 -- Create PLANES_SUSCRIPCION table
 CREATE TABLE PLANES_SUSCRIPCION
