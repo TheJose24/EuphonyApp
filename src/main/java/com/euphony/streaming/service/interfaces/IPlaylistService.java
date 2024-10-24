@@ -5,64 +5,60 @@ import com.euphony.streaming.dto.response.PlaylistResponseDTO;
 import java.util.List;
 
 /**
- * Interfaz que define las operaciones relacionadas con la gestión de playlists.
+ * Interface that defines playlist management operations.
  */
 public interface IPlaylistService {
 
     /**
-     * Obtiene todas las playlists registradas en el sistema.
+     * Gets all playlists registered in the system.
      *
-     * @return Una lista de {@link PlaylistResponseDTO} que contiene los datos de todas las playlists.
+     * @return A list of {@link PlaylistResponseDTO} containing data of all playlists.
      */
     List<PlaylistResponseDTO> findAllPlaylists();
 
     /**
-     * Obtiene la información de una playlist específica a partir de su ID.
+     * Gets information of a specific playlist by its ID.
      *
-     * @param id El identificador único de la playlist.
-     * @return Un {@link PlaylistResponseDTO} con los datos de la playlist.
+     * @param id The unique identifier of the playlist.
+     * @return A {@link PlaylistResponseDTO} with playlist data.
      */
     PlaylistResponseDTO findPlaylistById(Long id);
 
     /**
-     * Crea una nueva playlist en el sistema a partir de los datos proporcionados.
+     * Creates a new playlist in the system.
      *
-     * @param playlistRequestDTO Un objeto {@link PlaylistRequestDTO} que contiene los datos de la nueva playlist.
-     * @return Un {@link PlaylistResponseDTO} con los datos de la playlist creada.
+     * @param playlistRequestDTO A {@link PlaylistRequestDTO} object containing new playlist data.
      */
-    PlaylistResponseDTO createPlaylist(PlaylistRequestDTO playlistRequestDTO);
+    void createPlaylist(PlaylistRequestDTO playlistRequestDTO);
 
     /**
-     * Actualiza los datos de una playlist existente a partir de su ID.
+     * Updates data of an existing playlist.
      *
-     * @param id El identificador único de la playlist que se desea actualizar.
-     * @param playlistRequestDTO Un objeto {@link PlaylistRequestDTO} con los datos actualizados de la playlist.
-     * @return Un {@link PlaylistResponseDTO} con los datos de la playlist actualizada.
+     * @param id The unique identifier of the playlist to update.
+     * @param playlistRequestDTO A {@link PlaylistRequestDTO} object with updated playlist data.
      */
-    PlaylistResponseDTO updatePlaylist(Long id, PlaylistRequestDTO playlistRequestDTO);
+    void updatePlaylist(Long id, PlaylistRequestDTO playlistRequestDTO);
 
     /**
-     * Elimina una playlist del sistema a partir de su ID.
+     * Deletes a playlist from the system.
      *
-     * @param id El identificador único de la playlist que se desea eliminar.
+     * @param id The unique identifier of the playlist to delete.
      */
     void deletePlaylist(Long id);
 
     /**
-     * Agrega una canción a una playlist existente.
+     * Adds a song to an existing playlist.
      *
-     * @param playlistId El identificador único de la playlist.
-     * @param cancionId El identificador único de la canción que se desea agregar.
-     * @return Un {@link PlaylistResponseDTO} con los datos de la playlist actualizada.
+     * @param playlistId The unique identifier of the playlist.
+     * @param cancionId The unique identifier of the song to add.
      */
-    PlaylistResponseDTO addSongToPlaylist(Long playlistId, Long cancionId);
+    void addSongToPlaylist(Long playlistId, Long cancionId);
 
     /**
-     * Elimina una canción de una playlist existente.
+     * Removes a song from an existing playlist.
      *
-     * @param playlistId El identificador único de la playlist.
-     * @param cancionId El identificador único de la canción que se desea eliminar.
-     * @return Un {@link PlaylistResponseDTO} con los datos de la playlist actualizada.
+     * @param playlistId The unique identifier of the playlist.
+     * @param cancionId The unique identifier of the song to remove.
      */
-    PlaylistResponseDTO removeSongFromPlaylist(Long playlistId, Long cancionId);
+    void removeSongFromPlaylist(Long playlistId, Long cancionId);
 }

@@ -16,29 +16,29 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "DTO para la creación y actualización de playlists")
+@Schema(description = "DTO for playlist creation and update")
 public class PlaylistRequestDTO {
 
-    @Schema(description = "Nombre de la playlist", example = "Mi Playlist de Rock")
-    @NotBlank(message = "El nombre de la playlist no puede estar vacío")
-    @Size(min = 3, max = 255, message = "El nombre debe tener entre 3 y 255 caracteres")
-    private String nombre;
+    @Schema(description = "Name of the playlist", example = "My Rock Playlist")
+    @NotBlank(message = "Playlist name cannot be empty")
+    @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
+    private String name;
 
-    @Schema(description = "Descripción de la playlist", example = "Colección de mis canciones favoritas")
-    @Size(max = 1000, message = "La descripción no puede exceder los 1000 caracteres")
-    private String descripcion;
+    @Schema(description = "Description of the playlist", example = "Collection of my favorite songs")
+    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
+    private String description;
 
-    @Schema(description = "Indica si la playlist es pública", example = "false", defaultValue = "false")
-    @NotNull(message = "Debe especificar si la playlist es pública o privada")
+    @Schema(description = "Indicates if the playlist is public", example = "false", defaultValue = "false")
+    @NotNull(message = "Must specify if the playlist is public or private")
     @Builder.Default
     private Boolean isPublic = false;
 
-    @Schema(description = "URL de la imagen de portada", example = "https://ejemplo.com/imagen.jpg")
-    @Size(max = 255, message = "La URL de la imagen no puede exceder los 255 caracteres")
-    @Pattern(regexp = "^(https?://.*|)$", message = "La URL debe comenzar con http:// o https:// o estar vacía")
-    private String imgPortada;
+    @Schema(description = "Cover image URL", example = "https://example.com/image.jpg")
+    @Size(max = 255, message = "Image URL cannot exceed 255 characters")
+    @Pattern(regexp = "^(https?://.*|)$", message = "URL must start with http:// or https:// or be empty")
+    private String coverImage;
 
-    @Schema(description = "ID del usuario propietario", example = "123e4567-e89b-12d3-a456-426614174000")
-    @NotNull(message = "El ID del usuario no puede ser null")
-    private UUID idUsuario;
+    @Schema(description = "Owner user ID", example = "123e4567-e89b-12d3-a456-426614174000")
+    @NotNull(message = "User ID cannot be null")
+    private UUID userId;
 }
